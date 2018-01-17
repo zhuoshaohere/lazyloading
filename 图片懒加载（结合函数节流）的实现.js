@@ -1,24 +1,25 @@
-﻿/**
- * Created by liuzhuo on 2018/1/15.
+/**
+ * Created by lz on 2018/1/15.
  */
 class DealImage{
     construct(url){
         this.image_url = url; //缓存待加载图片的地址
-        this.minHeight = [0,0,0,0];//用于存放待比较的高度值,可根据需求初始化最小高度
+        this.minHeight = [0,0,0,0];//用于存放待比较的高度值
         this.num = 0;//存放加载的次数
         this.len = this.image_url.length;
     }
     /*函数节流（防止滚动条或resize事件触发过快）*/
     Throttle(fn){
         clearTimeout(fn.flag);
-        fn.flag = setTimeout(fn,100);
+        fn.flag = setTimeout(function(){
+            fn(myDealImage.num);
+        },100);
     }
     updateNum(){
         this.num++;
     }
     loadImage(num){
        var img_array = this.image_url;
-        /*此处以每次载入20张图片为例，可根据需求自定义*/
         for(var i = num*20;i < (this.len - i*20 <= 20?this.len:(num+1)*20);i++){
             /*以下载入图片*/
             var img_index = this[i];
@@ -35,8 +36,7 @@ class DealImage{
         }
     }
 }
-var img_url = ["url1","url2","url3","url4","url5","url6","url7","url8","url9","url10"];
-var myDealImage = new DealImage(img_url);//[]中存放需要图片的地址，若地址数目过多可配合ajax瀑布流请求方式
+var myDealImage = new DealImage([]);
 //页面初始化，先加载20张
 myDealImage.loadImage(0);
 myDealImage.updateNum();
@@ -47,6 +47,6 @@ $(document).on("scroll resize",function(){
     var min_height = Math.min.apply(Math,this.minHeight);
     var documentEle = document.documentElement;
     if(documentEle.scrollTop+ documentEle.clientHeight >= min_height) {
-        myDealImage.Throttle(myDealImage.loadImage(myDealImage.num));
+        myDealImage.Throttle(myDealImage.loadImage);
     }
 });
