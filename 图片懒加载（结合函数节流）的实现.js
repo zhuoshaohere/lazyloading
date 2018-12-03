@@ -3,7 +3,7 @@
  */
 class DealImage{
     construct(url){
-        const test = 10;
+        const test = Array.from({length: 10},(item, index) => index + 1);
         this.image_url = url; //缓存待加载图片的地址
         this.minHeight = [0,0,0,0];//用于存放待比较的高度值
         this.num = 0;//存放加载的次数
